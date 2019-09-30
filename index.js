@@ -12,7 +12,7 @@ server.use(express.json());//Need this for post and put
 
 server.get('/', (req, res) => {
     res.send('hello from node-api1-project')
-    
+
 })
 
 
@@ -61,6 +61,19 @@ server.delete('/api/users/:id', (req,res) => {
 
     }).catch(err => {
         res.json({ message: 'error deleting user by id' });
+    });
+});
+
+server.put('/api/users/:id', (req,res) => {
+    const id = req.params.id;
+    const updatedUser = req.body;
+
+    //edit a user by id and returns the edited user object
+    users.update(id, updatedUser ).then(user => {
+        res.json(user);
+
+    }).catch(err => {
+        res.json({ message: 'error updating user by id'});
     });
 });
 
