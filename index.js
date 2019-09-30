@@ -10,28 +10,32 @@ const server = express();
 //teaches server to speak JSON
 server.use(express.json());//Need this for post and put
 
-server.get('/', (req, res) => {
+server
+.get('/', (req, res) => {
     res.send('hello from node-api1-project')
 
 })
 
-
-server.post('/api/users', (req, res) => {
+server
+.post('/api/users', (req, res) => {
     const userData = req.body;
-
     //add user with post and Insert api method
-    users.insert(userData).then(user => {
+    users
+    .insert(userData)
+    .then(user => {
         res.json(user)
-
-    }).catch(err => {
+    })
+    .catch(err => {
         res.json({ message: 'error adding user' });
     });
 });
 
-server.get('/api/users', (req,res) => {
-
+server
+.get('/api/users', (req,res) => {
     //get a list of users from the database
-    users.find().then(user => {
+    users
+    .find()
+    .then(user => {
         //send the list of users to the client
         res.send(user);
     }).catch(err => {
@@ -39,45 +43,46 @@ server.get('/api/users', (req,res) => {
     });
 });
 
-
-server.get('/api/users/:id', (req,res) => {
+server
+.get('/api/users/:id', (req,res) => {
     const id = req.params.id;
-
     //get a user by id and return user object
-    users.findById(id).then(user => {
+    users
+    .findById(id)
+    .then(user => {
         res.json(user);
-
     }).catch(err => {
         res.json({ message: 'error finding user by id' });
     });
 });
 
-server.delete('/api/users/:id', (req,res) => {
+server
+.delete('/api/users/:id', (req,res) => {
     const id = req.params.id;
-
     //delete a user by id and return deleted user
-    users.remove(id).then(user => {
+    users
+    .remove(id)
+    .then(user => {
         res.json(user);
-
     }).catch(err => {
         res.json({ message: 'error deleting user by id' });
     });
 });
 
-server.put('/api/users/:id', (req,res) => {
+server
+.put('/api/users/:id', (req,res) => {
     const id = req.params.id;
     const updatedUser = req.body;
-
     //edit a user by id and returns the edited user object
-    users.update(id, updatedUser ).then(user => {
+    users
+    .update(id, updatedUser )
+    .then(user => {
         res.json(user);
-
-    }).catch(err => {
+    })
+    .catch(err => {
         res.json({ message: 'error updating user by id'});
     });
 });
-
-
 
 const port = 8000;
 //listening for connections
