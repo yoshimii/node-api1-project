@@ -20,14 +20,18 @@ server
 .post('/api/users', (req, res) => {
     const userData = req.body;
     //add user with post and Insert api method
-    users
-    .insert(userData)
-    .then(user => {
-        res.json(user)
-    })
-    .catch(err => {
-        res.json({ message: 'error adding user' });
-    });
+    if(!userData.name || !userData.bio) {
+        res.status(400).json({ message: 'incomplete inquiry, missing name and or bio'})
+    }else {
+        users
+        .insert(userData)
+        .then(user => {
+            res.status(201).json(user)
+        })
+        .catch(err => {
+            res.status(500).res.json({ message: 'The user information could not be retrieved' });
+        });
+    }
 });
 
 server
@@ -39,7 +43,7 @@ server
         //send the list of users to the client
         res.send(user);
     }).catch(err => {
-        res.send(err)
+        res.status(500).res.json({ message: 'The user information could not be retrieved' });
     });
 });
 
@@ -52,7 +56,7 @@ server
     .then(user => {
         res.json(user);
     }).catch(err => {
-        res.json({ message: 'error finding user by id' });
+        res.status(500).res.json({ message: 'The user information could not be retrieved' });
     });
 });
 
@@ -65,7 +69,7 @@ server
     .then(user => {
         res.json(user);
     }).catch(err => {
-        res.json({ message: 'error deleting user by id' });
+        res.status(500).res.json({ message: 'The user information could not be retrieved' });
     });
 });
 
@@ -80,7 +84,7 @@ server
         res.json(user);
     })
     .catch(err => {
-        res.json({ message: 'error updating user by id'});
+        res.status(500).res.json({ message: 'The user information could not be retrieved' });
     });
 });
 
