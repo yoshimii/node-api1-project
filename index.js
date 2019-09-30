@@ -25,6 +25,16 @@ server.post('/api/users', (req, res) => {
     });
 });
 
+server.get('/api/users', (req,res) => {
+    //get a list of users from the database
+    users.find().then(user => {
+        //send the list of users to the client
+        res.send(user);
+    }).catch(err => {
+        res.send(err)
+    })
+})
+
 const port = 8000;
 //listening for connections
 server.listen(port, () => console.log(`\nlistening on port ${port}\n`))
