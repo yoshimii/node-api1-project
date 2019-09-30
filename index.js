@@ -51,13 +51,18 @@ server
 .get('/api/users/:id', (req,res) => {
     const id = req.params.id;
     //get a user by id and return user object
-    users
-    .findById(id)
-    .then(user => {
-        res.json(user);
-    }).catch(err => {
-        res.status(500).res.json({ message: 'The user information could not be retrieved' });
-    });
+
+    if(users.findById(!id)) {
+        res.status(404).json({ message: 'The user with the specified ID does not exist' })
+    } else {
+        users
+        .findById(id)
+        .then(user => {
+            res.json(user);
+        }).catch(err => {
+            res.status(500).res.json({ message: 'The user information could not be retrieved' });
+        });
+    }
 });
 
 server
