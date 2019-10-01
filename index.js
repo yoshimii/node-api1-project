@@ -1,5 +1,6 @@
 // implement your API here
 const express = require('express');
+const cors = require('cors');
 
 //imports user module which contains our api methods
 const users = require('./data/db.js');
@@ -9,6 +10,7 @@ const server = express();
 
 //teaches server to speak JSON
 server.use(express.json());//Need this for post and put
+server.use(cors());//middleware
 
 server
 .get('/', (req, res) => {
@@ -66,22 +68,21 @@ server
 
 });
 
-// server
-// .delete('/api/users/:id', (req,res) => {
-//     const id = req.params.id;
-//     //delete a user by id and return deleted user
-//     if(users.findById(!id)) {
-//         res.status(404).json({ message: 'The user with the specified ID does not exist'})
-//     } else {
-//         users
-//         .remove(id)
-//         .then(user => {
-//             res.json(user);
-//         }).catch(err => {
-//             err.status(500).json({ message: 'The user information could not be retrieved' });
-//         });
-//     }
-// });
+server
+.delete('/api/users/:id', (req,res) => {
+    const id = req.params.id;
+    const deletedUser = req.body;
+    //delete a user by id and return deleted user
+    users
+    .remove(id)
+    .then(user => {
+        if(!user) {
+            res.status(404).json({ message: 'The user with the specified ID does not exist' })
+        } else {
+            res.json(user)
+        }
+    })
+});
 
 server
 .put('/api/users/:id', (req,res) => {
@@ -94,7 +95,12 @@ server
         users
         .update(id, updatedUser )
         .then(user => {
-            res.status(200).json(updatedUser);
+            if(!user) {
+                res.status(404).json({ message: 'The user with the specified ID does not exist' })
+            } else {
+                res.status(200).json(updatedUser);
+            }
+
         })
         .catch(err => {
             err.status(500).json({ message: 'The user information could not be retrieved' });
