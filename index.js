@@ -26,10 +26,10 @@ server
         users
         .insert(userData)
         .then(user => {
-            res.status(201).json(user)
+            res.status(201).json(userData)
         })
         .catch(err => {
-            res.status(500).res.json({ message: 'The user information could not be retrieved' });
+            err.status(500).json({ message: 'The user information could not be retrieved' });
         });
     }
 });
@@ -43,54 +43,63 @@ server
         //send the list of users to the client
         res.send(user);
     }).catch(err => {
-        res.status(500).res.json({ message: 'The user information could not be retrieved' });
+        err.status(500).json({ message: 'The user information could not be retrieved' });
     });
 });
 
 server
 .get('/api/users/:id', (req,res) => {
-    const id = req.params.id;
-    //get a user by id and return user object
+    const id = req.params.id
 
-    if(users.findById(!id)) {
-        res.status(404).json({ message: 'The user with the specified ID does not exist' })
-    } else {
-        users
-        .findById(id)
-        .then(user => {
-            res.json(user);
-        }).catch(err => {
-            res.status(500).res.json({ message: 'The user information could not be retrieved' });
-        });
-    }
-});
-
-server
-.delete('/api/users/:id', (req,res) => {
-    const id = req.params.id;
-    //delete a user by id and return deleted user
     users
-    .remove(id)
+    .findById(id)
     .then(user => {
-        res.json(user);
-    }).catch(err => {
-        res.status(500).res.json({ message: 'The user information could not be retrieved' });
-    });
+        if(!user) {
+            res.status(404).json({ message: 'The user with the specified ID does not exist '})
+        } else {
+            res.json(user)
+        }
+    })
+    .catch(err => {
+        res.status(500).json({ message: 'The user information could not be retrieved' })
+    })
+
 });
+
+// server
+// .delete('/api/users/:id', (req,res) => {
+//     const id = req.params.id;
+//     //delete a user by id and return deleted user
+//     if(users.findById(!id)) {
+//         res.status(404).json({ message: 'The user with the specified ID does not exist'})
+//     } else {
+//         users
+//         .remove(id)
+//         .then(user => {
+//             res.json(user);
+//         }).catch(err => {
+//             err.status(500).json({ message: 'The user information could not be retrieved' });
+//         });
+//     }
+// });
 
 server
 .put('/api/users/:id', (req,res) => {
     const id = req.params.id;
     const updatedUser = req.body;
     //edit a user by id and returns the edited user object
-    users
-    .update(id, updatedUser )
-    .then(user => {
-        res.json(user);
-    })
-    .catch(err => {
-        res.status(500).res.json({ message: 'The user information could not be retrieved' });
-    });
+    if(!updatedUser.name || !updatedUser.bio) {
+        res.status(400).json({ message: 'Please provide name and bio for the user' });
+    } else {
+        users
+        .update(id, updatedUser )
+        .then(user => {
+            res.status(200).json(updatedUser);
+        })
+        .catch(err => {
+            err.status(500).json({ message: 'The user information could not be retrieved' });
+        });
+    }
 });
 
 const port = 8000;
